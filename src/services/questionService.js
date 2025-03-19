@@ -1,4 +1,3 @@
-// src/services/questionService.js
 import axiosInstance from "./axiosConfig";
 import { endPoints } from "./endPoints";
 

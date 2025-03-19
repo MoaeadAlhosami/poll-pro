@@ -1,4 +1,3 @@
-// src/pages/AdminDashboard.jsx
 import { useEffect, useState, useContext } from "react";
 import {
   FaTrash,
@@ -21,7 +20,6 @@ export default function PollList() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // إذا كان لديك بيانات المدير في AuthContext يمكنك استخراجها، مثلاً:
   const { adminName } = useContext(AuthContext) || {};
 
   const navigate = useNavigate();
@@ -70,7 +68,6 @@ export default function PollList() {
     }
   };
 
-  // تصفية الاستطلاعات بناءً على نص البحث (عنوان أو وصف)
   const filteredPolls = polls.filter((poll) => {
     const lowerSearch = searchTerm.toLowerCase();
     return (
@@ -81,7 +78,6 @@ export default function PollList() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* الشريط الجانبي */}
       <div className="hidden md:block w-1/4 bg-gray-800 relative">
         <img
           src="/images/Rectangle 1 copy.png"
@@ -91,7 +87,6 @@ export default function PollList() {
       </div>
 
       <div className="flex-1 flex flex-col px-4 py-6 md:px-8 md:py-6">
-        {/* الهيدر */}
         <div className="flex items-center justify-between p-4 shadow-sm">
           <div
             style={{ direction: "rtl" }}
@@ -133,7 +128,6 @@ export default function PollList() {
           </div>
         </div>
 
-        {/* بطاقات المعلومات */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
           <div
             style={{ direction: "rtl" }}
@@ -198,7 +192,6 @@ export default function PollList() {
           </div>
         </div>
 
-        {/* جدول الاستطلاعات */}
         <div
           style={{ direction: "rtl" }}
           className="bg-white rounded-md shadow-sm m-4 p-4"

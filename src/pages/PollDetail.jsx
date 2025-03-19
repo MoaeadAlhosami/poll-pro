@@ -11,13 +11,11 @@ export default function PollDetail() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // الحالة الخاصة بعرض النافذة المنبثقة للمشاركين
   const [showParticipants, setShowParticipants] = useState(false);
   const [solveData, setSolveData] = useState(null);
   const [solveLoading, setSolveLoading] = useState(false);
   const [solveError, setSolveError] = useState(null);
 
-  // جلب بيانات الاستطلاع
   useEffect(() => {
     const fetchPoll = async () => {
       setLoading(true);
@@ -38,7 +36,6 @@ export default function PollDetail() {
     fetchPoll();
   }, [id]);
 
-  // دالة لجلب بيانات المشاركين عند فتح النافذة
   const fetchParticipants = async () => {
     setSolveLoading(true);
     try {
@@ -112,7 +109,6 @@ export default function PollDetail() {
         </button>
       </div>
 
-      {/* نافذة المشاركين */}
       {showParticipants && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white h-[70%] rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 relative overflow-scroll">

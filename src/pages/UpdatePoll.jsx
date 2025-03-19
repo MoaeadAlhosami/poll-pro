@@ -8,7 +8,6 @@ const UpdatePoll = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  // جلب بيانات الاستطلاع عند تحميل الصفحة لتعبئة الحقول بالبيانات الحالية
   useEffect(() => {
     const fetchPoll = async () => {
       try {
@@ -33,7 +32,6 @@ const UpdatePoll = () => {
     }
   }, [id, form]);
 
-  // معالجة عملية تحديث الاستطلاع عند الضغط على حفظ
   const onFinish = async (values) => {
     try {
       const response = await updatePoll(id, values);

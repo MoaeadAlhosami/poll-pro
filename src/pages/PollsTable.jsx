@@ -14,7 +14,6 @@ const PollsTable = () => {
       try {
         const response = await getAllPolls();
         if (response.success) {
-          // نتوقع أن تكون البيانات في response.data على شكل مصفوفة
           setPolls(response.data);
         }
       } catch (error) {

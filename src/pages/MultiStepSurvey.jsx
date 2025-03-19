@@ -12,22 +12,17 @@ import {
 } from "antd";
 import moment from "moment";
 
-// استيراد الدوال اللازمة من ملف الـ API
 import { getPollById } from "../services/pollService";
 import { solve } from "../services/solveService";
 
 function MultiStepSurvey() {
-  const { id } = useParams(); // الحصول على المعرّف من مسار URL
+  const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [pollData, setPollData] = useState(null);
-
-  // التحكم بالخطوات
   const [currentStep, setCurrentStep] = useState(1);
 
-  // مرجع الفورم للخطوة الأولى
   const [form] = Form.useForm();
 
-  // معلومات المستخدم من الخطوة الأولى
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -39,10 +34,8 @@ function MultiStepSurvey() {
     gender: "",
   });
 
-  // مصفوفة لاختيارات الأسئلة من الخطوة الثانية
   const [answers, setAnswers] = useState([]);
 
-  // جلب بيانات الاستطلاع عند تحميل الصفحة
   useEffect(() => {
     const fetchPollData = async () => {
       try {
@@ -50,10 +43,9 @@ function MultiStepSurvey() {
         const response = await getPollById(id);
         setPollData(response.data);
 
-        // تهيئة مصفوفة الإجابات بناءً على الأسئلة
         const initialAnswers = response.data.questions.map((q) => ({
           questionId: q.id,
-          answerId: "", // لم يتم الاختيار بعد
+          answerId: "",
         }));
         setAnswers(initialAnswers);
       } catch (error) {
@@ -66,7 +58,6 @@ function MultiStepSurvey() {
     fetchPollData();
   }, [id]);
 
-  // حساب نسبة التقدم في الاستطلاع
   const getProgress = () => {
     switch (currentStep) {
       case 1:
@@ -80,9 +71,6 @@ function MultiStepSurvey() {
     }
   };
 
-  // دالة goNext مع التحقق من الخطوات:
-  // - في الخطوة الأولى يتم التحقق من صحة بيانات الفورم ثم الانتقال إلى الخطوة الثانية.
-  // - في الخطوة الثانية يتم استدعاء API الـ solve، وفي حال نجاحه ينتقل إلى الخطوة الثالثة.
   const goNext = async () => {
     if (currentStep === 1) {
       form
@@ -98,7 +86,6 @@ function MultiStepSurvey() {
           console.log("Validation Error:", err);
         });
     } else if (currentStep === 2) {
-      // تجهيز الـ payload لاستدعاء API solve
       const payload = {
         ...userInfo,
         solve: answers.map((a) => ({
@@ -120,12 +107,10 @@ function MultiStepSurvey() {
     }
   };
 
-  // دالة الرجوع للخلف
   const goBack = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  // تحديث إجابة السؤال عند الاختيار
   const handleAnswerChange = (questionId, answerId) => {
     setAnswers((prev) =>
       prev.map((ans) =>
@@ -134,17 +119,13 @@ function MultiStepSurvey() {
     );
   };
 
-  // دالة إنهاء الاستطلاع (يمكنك تعديلها لتقوم بما تريده)
   const handleFinishSurvey = () => {
     alert("تم إنهاء الاستطلاع بنجاح!");
-    // يمكنك هنا إعادة توجيه المستخدم أو أي عملية نهائية أخرى
   };
 
-  // شريط الخطوات العلوي
   const StepHeader = () => {
     return (
       <div className="flex items-center justify-center gap-6 mb-8">
-        {/* الخطوة 1 */}
         <div className="flex flex-col items-center">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -170,7 +151,6 @@ function MultiStepSurvey() {
 
         <div className="w-12 h-[1px] bg-gray-300" />
 
-        {/* الخطوة 2 */}
         <div className="flex flex-col items-center">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -196,7 +176,6 @@ function MultiStepSurvey() {
 
         <div className="w-12 h-[1px] bg-gray-300" />
 
-        {/* الخطوة 3 */}
         <div className="flex flex-col items-center">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -223,10 +202,9 @@ function MultiStepSurvey() {
     );
   };
 
-  // الخطوة الأولى: بيانات المستخدم باستخدام antd Form
   const StepOne = () => {
     return (
-      <div style={{ padding: "0 16px" }}>
+      <div className="px-4">
         <Form
           form={form}
           layout="horizontal"
@@ -274,9 +252,8 @@ function MultiStepSurvey() {
             </Radio.Group>
           </Form.Item>
 
-          {/* سطر واحد لحقلي "تاريخ الولادة" و "التعليم" */}
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Form.Item
                 label="تاريخ الولادة"
                 name="date_of_birth"
@@ -286,7 +263,7 @@ function MultiStepSurvey() {
                 <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Form.Item
                 label="التعليم"
                 name="teaching"
@@ -321,7 +298,6 @@ function MultiStepSurvey() {
     );
   };
 
-  // الخطوة الثانية: عرض الأسئلة والأجوبة من pollData
   const StepTwo = () => {
     if (!pollData?.questions) return null;
     return (
@@ -352,7 +328,6 @@ function MultiStepSurvey() {
     );
   };
 
-  // الخطوة الثالثة: رسالة إنهاء الاستطلاع
   const StepThree = () => (
     <div className="flex flex-col items-center justify-center text-center space-y-4">
       <img
@@ -382,31 +357,41 @@ function MultiStepSurvey() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    // نستخدم min-h-screen هنا ليكون المحتوى قابلاً للتمرير على الأجهزة الصغيرة
+    <div className="flex flex-col md:flex-row min-h-screen">
       {/* الشريط الجانبي */}
       <div
-        className="w-1/3 p-8 text-white flex flex-col relative overflow-hidden"
+        className="w-full md:w-1/3 flex flex-col"
         style={{ backgroundColor: "#001b42" }}
       >
-        <img
-          src="/images/Rectangle 1 copy (1).png"
-          alt="Sidebar Background"
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
-        />
-        <div style={{ direction: "rtl" }} className="relative mt-auto mb-4">
-          <h1 className="text-3xl font-bold mb-6">
-            {pollData.title || "عنوان الاستطلاع"}
-          </h1>
-          <p className="text-sm text-gray-200 mb-16">
-            {pollData.description || "شرح عن الاستطلاع"}
-          </p>
+        {/* القسم العلوي: الصورة والنص */}
+        <div className="relative">
+          <img
+            src="/images/Rectangle 1 copy (1).png"
+            alt="Sidebar Background"
+            className="w-full object-cover opacity-50"
+          />
+          <div
+            className="absolute inset-0 flex flex-col justify-center items-center z-10 p-4"
+            style={{ direction: "rtl" }}
+          >
+            <h1 className="text-3xl font-bold mb-2">
+              {pollData.title || "عنوان الاستطلاع"}
+            </h1>
+            <p className="text-sm text-gray-200">
+              {pollData.description || "شرح عن الاستطلاع"}
+            </p>
+          </div>
+        </div>
+        {/* القسم السفلي: معلومات الخطوة وشريط التقدم */}
+        <div className="p-4 mt-auto" style={{ direction: "rtl" }}>
           <p className="text-sm text-gray-200 mb-2">
             الخطوة الحالية: {currentStep} من 3
           </p>
           <p className="text-sm text-gray-100 mb-1">
             {getProgress()}% تم استكماله
           </p>
-          <div className="w-full bg-white h-2 rounded mb-2 relative overflow-hidden">
+          <div className="w-full bg-white h-2 rounded relative overflow-hidden">
             <div
               className="h-2 bg-gray-300 absolute top-0 left-0 right-0"
               style={{ width: "100%" }}
@@ -422,13 +407,13 @@ function MultiStepSurvey() {
         </div>
       </div>
 
-      {/* الجزء الخاص بالمحتوى مع سكرول داخلي عند الحاجة */}
-      <div className="w-2/3 bg-white flex flex-col">
+      {/* المحتوى الرئيسي */}
+      <div className="w-full md:w-2/3 bg-white flex flex-col">
         <div className="p-4 border-b border-gray-200">
           <StepHeader />
         </div>
 
-        <div className="flex-1" style={{ overflowY: "auto" }}>
+        <div className="flex-1 overflow-y-auto">
           <div className="p-6 md:p-10">
             {currentStep === 1 && <StepOne />}
             {currentStep === 2 && <StepTwo />}
@@ -436,11 +421,11 @@ function MultiStepSurvey() {
           </div>
         </div>
 
-        <div className="p-4 border-t border-gray-200 flex justify-between items-center">
+        <div className="p-4 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-3">
           {currentStep > 1 && (
             <button
               onClick={goBack}
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-base"
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-base w-full md:w-auto"
             >
               رجوع
             </button>
@@ -449,7 +434,7 @@ function MultiStepSurvey() {
             <button
               onClick={goNext}
               style={{ backgroundColor: "#0C6D71" }}
-              className="px-6 w-full py-3 mx-3 text-white rounded hover:bg-blue-700 text-base"
+              className="px-6 w-full py-3 mx-3 text-white rounded hover:bg-blue-700 text-base md:w-auto"
             >
               التالي
             </button>
@@ -458,7 +443,7 @@ function MultiStepSurvey() {
             <button
               style={{ backgroundColor: "#0C6D71" }}
               onClick={handleFinishSurvey}
-              className="px-6 py-3 w-full mx-3 text-white rounded hover:bg-green-700 text-base"
+              className="px-6 py-3 w-full mx-3 text-white rounded hover:bg-green-700 text-base md:w-auto"
             >
               تم
             </button>
